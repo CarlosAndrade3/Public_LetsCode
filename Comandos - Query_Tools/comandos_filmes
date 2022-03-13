@@ -1,0 +1,41 @@
+CREATE TABLE letscode_genero (
+	id_genero int not null, 
+	nome varchar (40) not null,
+	decricap varchar (100) not null,
+	primary key (id_genero)
+);
+
+CREATE TABLE letscode_ator (
+	id_ator int not null, 
+	nome varchar (40) not null,
+	pais_origem varchar (100) not null,
+	diretor varchar (40) not null,
+	nota int not null, 
+	primary key (id_ator)
+);
+
+CREATE TABLE letscode_filme (
+	id_filme int not null, 
+	nome varchar (40) not null,
+	classificacao int not null, 
+	diretor varchar (40) not null,
+	nota int null, 
+	id_genero int not null,
+	id_ator int not null,
+	FOREIGN KEY (id_genero) REFERENCES letscode_genero (id_genero),
+	primary key (id_filme)
+);
+
+CREATE TABLE letscode_participacoes (
+	id_ator int not null, 
+	id_filme int not null,
+	FOREIGN KEY (id_ator) REFERENCES letscode_ator (id_ator),
+	FOREIGN KEY (id_filme) REFERENCES letscode_filme (id_filme)
+);
+
+
+SELECT * FROM letscode_filme AS Filme
+INNER JOIN letscode_participacoes
+	AS part ON filme.id_filme = part.id_filme
+INNER JOIN letscode_ator
+	AS ator ON part.id_ator = ator.id_ator
