@@ -1,0 +1,103 @@
+CREATE DATABASE biblioteca;
+
+--- Create Table cliente
+CREATE TABLE cliente (
+    cliente_id int PRIMARY KEY,
+    nome character varying(40) NOT NULL,
+    cpf character varying(11) NOT NULL,
+    endereco character varying(40) NOT NULL,
+    telefone character varying(40) NOT NULL,
+    email character varying(40) NOT NULL,
+    id_pedido int NOT NULL
+);
+
+--- Create Table pedido
+CREATE TABLE pedido (
+    id_pedido int PRIMARY KEY,
+    status_pedido character varying(15) NOT NULL,
+    id_cliente int NOT NULL
+);
+
+--- Create Table itens_pedido
+CREATE TABLE itens_pedido (
+    quantidade_total int NOT NULL,
+	previsão_entrega timestamp,
+	status_item character varying(15) NOT NULL,
+    id_estoque int NOT NULL,
+    id_livro int NOT NULL,
+    id_pedido int NOT NULL
+);
+
+--- Create Table estoque
+CREATE TABLE estoque (
+	id_estoque int PRIMARY KEY,
+	quantidade int NOT NULL,
+    id_editora int NOT NULL,
+    id_livro int NOT NULL
+);
+
+--- Create Table editora
+CREATE TABLE editora (
+	id_editora int PRIMARY KEY,
+	nome character varying(40) NOT NULL,
+    ano_criacao character varying(4) NOT NULL,
+    id_livro int NOT NULL,
+    id_estoque int NOT NULL
+);
+
+--- Create Table livro
+CREATE TABLE livro (
+	id_livro int PRIMARY KEY,
+	categoria character varying(15) NOT NULL,
+	titulo character varying(50) NOT NULL,
+	isbn character varying(20) NOT NULL,
+    ano_publicacao character varying(4) NOT NULL,
+    id_estoque int NOT NULL,
+    id_editora int NOT NULL
+);
+
+--- Create Table autor_participantes
+CREATE TABLE autor_participantes (
+    id_autor int NOT NULL,
+    id_livro int NOT NULL
+);
+
+--- Create Table autor
+CREATE TABLE autor (
+	id_autor int PRIMARY KEY,
+	nome character varying(50) NOT NULL,
+	nascimento character varying(20) NOT NULL,
+    pais_origem character varying(15) NOT NULL,
+	sexo character varying(10) NOT NULL
+);
+
+
+ALTER TABLE ONLY cliente
+    ADD CONSTRAINT id_pedido FOREIGN KEY (id_pedido) REFERENCES pedido;
+	
+ALTER TABLE ONLY pedido
+    ADD CONSTRAINT id_cliente FOREIGN KEY (id_cliente) REFERENCES cliente;
+
+ALTER TABLE ONLY itens_pedido
+    ADD CONSTRAINT id_livro FOREIGN KEY (id_livro) REFERENCES livro,
+	ADD CONSTRAINT id_estoque FOREIGN KEY (id_estoque) REFERENCES estoque,
+	ADD CONSTRAINT id_pedido FOREIGN KEY (id_pedido) REFERENCES pedido;
+
+ALTER TABLE ONLY estoque
+    ADD CONSTRAINT id_livro FOREIGN KEY (id_livro) REFERENCES livro,
+    ADD CONSTRAINT id_editora FOREIGN KEY (id_editora) REFERENCES editora;
+
+ALTER TABLE ONLY editora
+    ADD CONSTRAINT id_livro FOREIGN KEY (id_livro) REFERENCES livro,
+	ADD CONSTRAINT id_estoque FOREIGN KEY (id_estoque) REFERENCES estoque;
+
+ALTER TABLE ONLY livro
+    ADD CONSTRAINT id_editora FOREIGN KEY (id_editora) REFERENCES editora,
+	ADD CONSTRAINT id_estoque FOREIGN KEY (id_estoque) REFERENCES estoque;
+
+ALTER TABLE ONLY autor_participantes
+    ADD CONSTRAINT id_autor FOREIGN KEY (id_autor) REFERENCES autor;
+	
+ALTER TABLE ONLY autor_participantes
+    ADD CONSTRAINT id_livro FOREIGN KEY (id_livro) REFERENCES livro;
+
